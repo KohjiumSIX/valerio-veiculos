@@ -1,31 +1,45 @@
 export type Vehicle = {
   id: string;
   slug: string;
-  name: string;
+
+  // nome principal do carro
+  title: string;
+
   brand: string;
   model: string;
+
   year: number | null;
   price: number | null;
   km: number | null;
+
   color: string | null;
   fuel: string | null;
   transmission: string | null;
   description: string | null;
+
   cover_image: string | null;
   images: string[] | null;
-  featured: boolean | null;
-  offer: boolean | null;
-  sold: boolean | null;
 
-  // campos adicionais que você pediu
+  // status
+  is_published: boolean;
+  is_featured: boolean;
+  is_offer: boolean;
+  is_new_arrival: boolean;
+  sold: boolean;
+
+  // métricas
+  views: number | null;
+
+  // extras que você adicionou
   body_type: string | null;
   accepts_trade: boolean | null;
   plate_final: string | null;
   ipva_paid: boolean | null;
   licensed: boolean | null;
 
-  created_at?: string | null;
-  updated_at?: string | null;
+  // datas
+  created_at: string | null;
+  updated_at: string | null;
 };
 
 export type Lead = {
