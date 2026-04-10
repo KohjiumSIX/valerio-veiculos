@@ -1,13 +1,18 @@
-import { MetadataRoute } from "next";
+import type { MetadataRoute } from "next";
+import { createClient } from "@/lib/server";
 
-// Se tiver banco (Supabase), depois podemos puxar os veículos dinâmicos aqui
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
+  const baseUrl = "https://www.valerioveiculos.com.br";
+  const supabase = await createClient();
 
-export default function sitemap(): MetadataRoute.Sitemap {
-  const baseUrl = "https://valerioveiculos.com.br";
+  const { data, error } = await supabase
+    .from("vehicles")
+    .select("slug, updated_at, created_at")
+    .not("slug", "is", null);
 
-  return [
+  const staticPages: MetadataRoute.Sitemap = [
     {
-      url: `${baseUrl}`,
+      url: `${baseUrl}/`,
       lastModified: new Date(),
       changeFrequency: "daily",
       priority: 1,
@@ -18,13 +23,20 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: "daily",
       priority: 0.9,
     },
-
-    // EXEMPLOS (quando tiver veículos dinâmicos)
-    // {
-    //   url: `${baseUrl}/veiculos/civic-2020`,
-    //   lastModified: new Date(),
-    //   changeFrequency: "weekly",
-    //   priority: 0.8,
-    // },
   ];
+
+  if (error || !data) {
+    return staticPages;
+  }
+
+  const vehiclePages: MetadataRoute.Sitemap = data
+    .filter((vehicle) => Boolean(vehicle.slug))
+    .map((vehicle) => ({
+      url: `${baseUrl}/veiculos/${vehicle.slug}`,
+      lastModified: vehicle.updated_at ?? vehicle.created_at ?? new Date(),
+      changeFrequency: "daily",
+      priority: 0.8,
+    }));
+
+  return [...staticPages, ...vehiclePages];
 }

@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Navbar from "@/components/Navbar";
 import Container from "@/components/Container";
@@ -8,8 +9,10 @@ import { generateWhatsAppLink } from "@/lib/whatsapp";
 import { getVehicleBySlug } from "@/lib/vehicles";
 import { WHATSAPP_NUMBER } from "@/lib/constants";
 
-type Props = {
-  params: Promise<{ slug: string }>;
+type PageProps = {
+  params: {
+    slug: string;
+  };
 };
 
 function formatVehiclePrice(price: number | null) {
@@ -23,13 +26,44 @@ function formatVehiclePrice(price: number | null) {
   });
 }
 
-export default async function VehicleDetailsPage({ params }: Props) {
-  const { slug } = await params;
+export async function generateMetadata(
+  { params }: PageProps
+): Promise<Metadata> {
+  const vehicle = await getVehicleBySlug(params.slug);
+
+  if (!vehicle) {
+    return {
+      title: "Veículo não encontrado | Valério Veículos",
+      description: "O veículo procurado não foi encontrado.",
+    };
+  }
+
+  const title = `${vehicle.brand} ${vehicle.model} ${vehicle.year} à venda | Valério Veículos`;
+  const description = `${vehicle.brand} ${vehicle.model} ${vehicle.year} com ${
+    vehicle.km ? `${vehicle.km.toLocaleString("pt-BR")} km` : "quilometragem sob consulta"
+  }. Veículo disponível na Valério Veículos em Rio Negro PR.`;
+
+  return {
+    title,
+    description,
+    openGraph: {
+      title,
+      description,
+      type: "website",
+      locale: "pt_BR",
+      url: `https://www.valerioveiculos.com.br/veiculos/${vehicle.slug}`,
+      images: vehicle.cover_image ? [vehicle.cover_image] : [],
+    },
+  };
+}
+
+export default async function VehicleDetailsPage({ params }: PageProps) {
   const supabase = await createClient();
+  const vehicle = await getVehicleBySlug(params.slug);
 
-  const vehicle = await getVehicleBySlug(slug);
-
-  if (!vehicle) return notFound();
+  if (!vehicle) {
+    notFound();
+  }
 
   await supabase.rpc("increment_vehicle_views", {
     vehicle_id: vehicle.id,
@@ -38,8 +72,8 @@ export default async function VehicleDetailsPage({ params }: Props) {
   const images = vehicle.images?.length
     ? vehicle.images
     : vehicle.cover_image
-    ? [vehicle.cover_image]
-    : [];
+      ? [vehicle.cover_image]
+      : [];
 
   const whatsappLink = generateWhatsAppLink({
     phone: WHATSAPP_NUMBER,
