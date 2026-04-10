@@ -2,10 +2,10 @@
 
 import { useMemo, useState } from "react";
 import VehicleGrid from "@/components/VehicleGrid";
-import type { Car } from "@/lib/data";
+import type { Vehicle } from "@/lib/types";
 
 type EstoqueClientProps = {
-  vehicles: Car[];
+  vehicles: Vehicle[];
 };
 
 type SortOption =
@@ -16,14 +16,6 @@ type SortOption =
   | "maior-km"
   | "mais-novos"
   | "mais-antigos";
-
-function parsePrice(price: string) {
-  return Number(price.replace(/[^\d,]/g, "").replace(".", "").replace(",", "."));
-}
-
-function parseKm(km: string) {
-  return Number(km.replace(/[^\d]/g, ""));
-}
 
 export default function EstoqueClient({ vehicles }: EstoqueClientProps) {
   const [search, setSearch] = useState("");
@@ -36,19 +28,19 @@ export default function EstoqueClient({ vehicles }: EstoqueClientProps) {
   const [sortBy, setSortBy] = useState<SortOption>("recentes");
 
   const brands = useMemo(() => {
-    return [...new Set(vehicles.map((vehicle) => vehicle.subtitle.split(" • ")[0]))]
+    return [...new Set(vehicles.map((vehicle) => vehicle.brand))]
       .filter(Boolean)
       .sort((a, b) => a.localeCompare(b, "pt-BR"));
   }, [vehicles]);
 
   const fuels = useMemo(() => {
-    return [...new Set(vehicles.map((vehicle) => vehicle.fuel))]
+    return [...new Set(vehicles.map((vehicle) => vehicle.fuel ?? ""))]
       .filter(Boolean)
       .sort((a, b) => a.localeCompare(b, "pt-BR"));
   }, [vehicles]);
 
   const transmissions = useMemo(() => {
-    return [...new Set(vehicles.map((vehicle) => vehicle.transmission))]
+    return [...new Set(vehicles.map((vehicle) => vehicle.transmission ?? ""))]
       .filter(Boolean)
       .sort((a, b) => a.localeCompare(b, "pt-BR"));
   }, [vehicles]);
@@ -57,28 +49,34 @@ export default function EstoqueClient({ vehicles }: EstoqueClientProps) {
     const normalizedSearch = search.trim().toLowerCase();
 
     const result = vehicles.filter((vehicle) => {
-      const vehicleBrand = vehicle.subtitle.split(" • ")[0] || "";
-      const vehiclePrice = parsePrice(vehicle.price);
-      const vehicleKm = parseKm(vehicle.km);
+      const vehicleBrand = vehicle.brand ?? "";
+      const vehiclePrice = vehicle.price ?? 0;
+      const vehicleKm = vehicle.km ?? 0;
+      const vehicleYear = vehicle.year ?? 0;
+
+      const searchableText = [
+        vehicle.title,
+        vehicle.brand,
+        vehicle.model,
+        vehicle.fuel ?? "",
+        vehicle.transmission ?? "",
+        vehicle.year?.toString() ?? "",
+        vehicle.body_type ?? "",
+      ]
+        .join(" ")
+        .toLowerCase();
 
       const matchesSearch =
-        !normalizedSearch ||
-        vehicle.title.toLowerCase().includes(normalizedSearch) ||
-        vehicle.subtitle.toLowerCase().includes(normalizedSearch);
+        !normalizedSearch || searchableText.includes(normalizedSearch);
 
       const matchesBrand = !brand || vehicleBrand === brand;
       const matchesFuel = !fuel || vehicle.fuel === fuel;
       const matchesTransmission =
         !transmission || vehicle.transmission === transmission;
 
-      const matchesMaxPrice =
-        !maxPrice || vehiclePrice <= Number(maxPrice);
-
-      const matchesMinYear =
-        !minYear || vehicle.year >= Number(minYear);
-
-      const matchesMaxKm =
-        !maxKm || vehicleKm <= Number(maxKm);
+      const matchesMaxPrice = !maxPrice || vehiclePrice <= Number(maxPrice);
+      const matchesMinYear = !minYear || vehicleYear >= Number(minYear);
+      const matchesMaxKm = !maxKm || vehicleKm <= Number(maxKm);
 
       return (
         matchesSearch &&
@@ -93,17 +91,23 @@ export default function EstoqueClient({ vehicles }: EstoqueClientProps) {
 
     switch (sortBy) {
       case "menor-preco":
-        return [...result].sort((a, b) => parsePrice(a.price) - parsePrice(b.price));
+        return [...result].sort((a, b) => (a.price ?? 0) - (b.price ?? 0));
+
       case "maior-preco":
-        return [...result].sort((a, b) => parsePrice(b.price) - parsePrice(a.price));
+        return [...result].sort((a, b) => (b.price ?? 0) - (a.price ?? 0));
+
       case "menor-km":
-        return [...result].sort((a, b) => parseKm(a.km) - parseKm(b.km));
+        return [...result].sort((a, b) => (a.km ?? 0) - (b.km ?? 0));
+
       case "maior-km":
-        return [...result].sort((a, b) => parseKm(b.km) - parseKm(a.km));
+        return [...result].sort((a, b) => (b.km ?? 0) - (a.km ?? 0));
+
       case "mais-novos":
-        return [...result].sort((a, b) => b.year - a.year);
+        return [...result].sort((a, b) => (b.year ?? 0) - (a.year ?? 0));
+
       case "mais-antigos":
-        return [...result].sort((a, b) => a.year - b.year);
+        return [...result].sort((a, b) => (a.year ?? 0) - (b.year ?? 0));
+
       default:
         return result;
     }
@@ -120,13 +124,13 @@ export default function EstoqueClient({ vehicles }: EstoqueClientProps) {
   ]);
 
   const hasActiveFilters =
-    search ||
-    brand ||
-    fuel ||
-    transmission ||
-    maxPrice ||
-    minYear ||
-    maxKm ||
+    !!search ||
+    !!brand ||
+    !!fuel ||
+    !!transmission ||
+    !!maxPrice ||
+    !!minYear ||
+    !!maxKm ||
     sortBy !== "recentes";
 
   function clearFilters() {

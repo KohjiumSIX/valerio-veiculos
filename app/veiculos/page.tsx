@@ -3,18 +3,16 @@ import Container from "@/components/Container";
 import SectionTitle from "@/components/SectionTitle";
 import EstoqueClient from "@/app/veiculos/EstoqueClient";
 import { getPublishedVehicles } from "@/lib/vehicles";
-import { mapVehicleToCard } from "@/lib/mappers";
-import type { Car } from "@/lib/data";
+import type { Vehicle } from "@/lib/types";
 
 export default async function VehiclesPage() {
   const vehicles = await getPublishedVehicles();
-  const cards: Car[] = vehicles.map(mapVehicleToCard);
 
   return (
     <main className="min-h-screen bg-black text-white">
       <Navbar />
 
-      <section className="border-b border-black/10 bg-black pt-32 pb-14 text-white">
+      <section className="border-b border-black/10 bg-black pb-14 pt-32 text-white">
         <Container>
           <SectionTitle
             eyebrow="Catálogo"
@@ -58,7 +56,7 @@ export default async function VehiclesPage() {
             </div>
           </div>
 
-          <EstoqueClient vehicles={cards} />
+          <EstoqueClient vehicles={vehicles as Vehicle[]} />
         </Container>
       </section>
     </main>

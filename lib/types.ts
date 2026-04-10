@@ -1,10 +1,7 @@
 export type Vehicle = {
   id: string;
   slug: string;
-
-  // nome principal do carro
   title: string;
-
   brand: string;
   model: string;
 
@@ -20,24 +17,20 @@ export type Vehicle = {
   cover_image: string | null;
   images: string[] | null;
 
-  // status
   is_published: boolean;
   is_featured: boolean;
   is_offer: boolean;
   is_new_arrival: boolean;
   sold: boolean;
 
-  // métricas
   views: number | null;
 
-  // extras que você adicionou
   body_type: string | null;
   accepts_trade: boolean | null;
   plate_final: string | null;
   ipva_paid: boolean | null;
   licensed: boolean | null;
 
-  // datas
   created_at: string | null;
   updated_at: string | null;
 };

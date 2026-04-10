@@ -21,7 +21,7 @@ export default function Navbar() {
           <div className="flex items-center gap-4 md:gap-8">
             <Link href="/" className="flex shrink-0 items-center">
               <img
-                src="logo-valerio.png"
+                src="/logo-valerio.png"
                 alt="Valério Veículos"
                 className="h-7 w-auto object-contain md:h-8"
               />
