@@ -63,7 +63,7 @@ export default function Home() {
         </Container>
       </section>
 
-<section className="-mt-10 bg-black pb-20 text-white lg:-mt-14">
+<section className="bg-black pb-20 pt-6 text-white lg:pt-8">
   <Container>
     <div className="grid gap-10 rounded-[2.2rem] border border-white/10 bg-white/[0.03] p-7 shadow-[0_20px_80px_rgba(0,0,0,0.18)] md:p-9 xl:grid-cols-[1.2fr_0.9fr] xl:items-start xl:gap-14 xl:p-11">
 
