@@ -1,30 +1,31 @@
 export type Vehicle = {
   id: string;
-  title: string;
   slug: string;
+  name: string;
   brand: string;
   model: string;
-  year: number;
-  price: number;
-  km: number;
-  fuel: string;
-  transmission: string;
+  year: number | null;
+  price: number | null;
+  km: number | null;
   color: string | null;
+  fuel: string | null;
+  transmission: string | null;
   description: string | null;
   cover_image: string | null;
-  images: string[];
-  is_published: boolean;
-  is_featured: boolean;
-  is_offer: boolean;
-  is_new_arrival: boolean;
-  views?: number | null;
-  created_at?: string | null;
+  images: string[] | null;
+  featured: boolean | null;
+  offer: boolean | null;
+  sold: boolean | null;
 
-  body_type?: string | null;
-  accepts_trade?: boolean | null;
-  plate_ending?: string | null;
-  ipva_paid?: boolean | null;
-  licensed?: boolean | null;
+  // campos adicionais que você pediu
+  body_type: string | null;
+  accepts_trade: boolean | null;
+  plate_final: string | null;
+  ipva_paid: boolean | null;
+  licensed: boolean | null;
+
+  created_at?: string | null;
+  updated_at?: string | null;
 };
 
 export type Lead = {
