@@ -11,7 +11,7 @@ export default function Home() {
         <Container>
           <Navbar />
 
-          <div className="grid min-h-[88vh] gap-10 pt-24 pb-10 lg:grid-cols-[1fr_1.08fr] lg:items-center lg:gap-14 lg:pt-24">
+          <div className="grid min-h-[88vh] gap-10 pt-24 pb-16 lg:grid-cols-[1fr_1.08fr] lg:items-center lg:gap-14 lg:pt-24 lg:pb-20">
             <div className="max-w-[720px]">
               <p className="text-[11px] font-semibold uppercase tracking-[0.32em] text-white/45 md:text-xs">
                 Desde 2009
