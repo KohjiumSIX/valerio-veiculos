@@ -1,12 +1,13 @@
 import type { Vehicle } from "@/lib/types";
 import { createClient } from "@/lib/server";
+import { VEHICLE_SELECT_FIELDS } from "@/lib/constants";
 
 export async function getPublishedVehicles() {
   const supabase = await createClient();
 
   const { data, error } = await supabase
     .from("vehicles")
-    .select("*")
+    .select(VEHICLE_SELECT_FIELDS)
     .eq("is_published", true)
     .order("created_at", { ascending: false });
 
@@ -22,7 +23,7 @@ export async function getFeaturedVehicles() {
 
   const { data, error } = await supabase
     .from("vehicles")
-    .select("*")
+    .select(VEHICLE_SELECT_FIELDS)
     .eq("is_published", true)
     .eq("is_featured", true)
     .order("created_at", { ascending: false });
@@ -39,7 +40,7 @@ export async function getOfferVehicles() {
 
   const { data, error } = await supabase
     .from("vehicles")
-    .select("*")
+    .select(VEHICLE_SELECT_FIELDS)
     .eq("is_published", true)
     .eq("is_offer", true)
     .order("created_at", { ascending: false });
@@ -56,7 +57,7 @@ export async function getNewArrivalVehicles() {
 
   const { data, error } = await supabase
     .from("vehicles")
-    .select("*")
+    .select(VEHICLE_SELECT_FIELDS)
     .eq("is_published", true)
     .eq("is_new_arrival", true)
     .order("created_at", { ascending: false });
@@ -73,7 +74,7 @@ export async function getVehicleBySlug(slug: string) {
 
   const { data, error } = await supabase
     .from("vehicles")
-    .select("*")
+    .select(VEHICLE_SELECT_FIELDS)
     .eq("slug", slug)
     .eq("is_published", true)
     .maybeSingle();

@@ -6,10 +6,22 @@ import WhatsAppButton from "@/components/WhatsAppButton";
 import { createClient } from "@/lib/server";
 import { generateWhatsAppLink } from "@/lib/whatsapp";
 import { getVehicleBySlug } from "@/lib/vehicles";
+import { WHATSAPP_NUMBER } from "@/lib/constants";
 
 type Props = {
   params: Promise<{ slug: string }>;
 };
+
+function formatVehiclePrice(price: number | null) {
+  if (typeof price !== "number" || Number.isNaN(price)) {
+    return "Sob consulta";
+  }
+
+  return price.toLocaleString("pt-BR", {
+    style: "currency",
+    currency: "BRL",
+  });
+}
 
 export default async function VehicleDetailsPage({ params }: Props) {
   const { slug } = await params;
@@ -26,19 +38,21 @@ export default async function VehicleDetailsPage({ params }: Props) {
   const images = vehicle.images?.length
     ? vehicle.images
     : vehicle.cover_image
-      ? [vehicle.cover_image]
-      : [];
+    ? [vehicle.cover_image]
+    : [];
 
   const whatsappLink = generateWhatsAppLink({
-    phone: "5547984629584",
+    phone: WHATSAPP_NUMBER,
     vehicleName: vehicle.title,
   });
+
+  const plateEnding = vehicle.plate_ending || "-";
 
   return (
     <main className="min-h-screen bg-white text-black">
       <Navbar />
 
-      <section className="pt-32 pb-14">
+      <section className="pb-14 pt-32">
         <Container>
           <div className="mb-8 flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
             <div>
@@ -59,7 +73,7 @@ export default async function VehicleDetailsPage({ params }: Props) {
                 Preço
               </p>
               <p className="mt-2 text-3xl font-bold">
-                R$ {Number(vehicle.price).toLocaleString("pt-BR")}
+                {formatVehiclePrice(vehicle.price)}
               </p>
             </div>
           </div>
@@ -75,7 +89,14 @@ export default async function VehicleDetailsPage({ params }: Props) {
 
                 <div className="mt-6 grid grid-cols-2 gap-4">
                   <SpecCard label="Ano" value={String(vehicle.year ?? "-")} />
-                  <SpecCard label="KM" value={String(vehicle.km ?? "-")} />
+                  <SpecCard
+                    label="KM"
+                    value={
+                      vehicle.km !== null
+                        ? `${vehicle.km.toLocaleString("pt-BR")} km`
+                        : "-"
+                    }
+                  />
                   <SpecCard label="Combustível" value={vehicle.fuel || "-"} />
                   <SpecCard label="Câmbio" value={vehicle.transmission || "-"} />
                   <SpecCard label="Cor" value={vehicle.color || "-"} />
@@ -84,11 +105,7 @@ export default async function VehicleDetailsPage({ params }: Props) {
                     label="Aceita troca"
                     value={vehicle.accepts_trade ? "Sim" : "Não"}
                   />
-<SpecCard
-  label="Final da placa"
-  value={vehicle.plate_final || "-"}
-/>
-                  
+                  <SpecCard label="Final da placa" value={plateEnding} />
                   <SpecCard
                     label="IPVA pago"
                     value={vehicle.ipva_paid ? "Sim" : "Não"}

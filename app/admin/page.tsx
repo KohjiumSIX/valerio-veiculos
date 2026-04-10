@@ -4,6 +4,8 @@ import Navbar from "@/components/Navbar";
 import Container from "@/components/Container";
 import AdminLogoutButton from "@/components/AdminLogoutButton";
 import { createClient } from "@/lib/server";
+import { isAdminEmail } from "@/lib/auth";
+import { VEHICLE_SELECT_FIELDS } from "@/lib/constants";
 
 export default async function AdminPage() {
   const supabase = await createClient();
@@ -13,13 +15,13 @@ export default async function AdminPage() {
     error: userError,
   } = await supabase.auth.getUser();
 
-  if (userError || !user) {
+  if (userError || !user?.email || !isAdminEmail(user.email)) {
     redirect("/login");
   }
 
   const { data: vehicles, error: vehiclesError } = await supabase
     .from("vehicles")
-    .select("*")
+    .select(VEHICLE_SELECT_FIELDS)
     .order("created_at", { ascending: false });
 
   if (vehiclesError) {
@@ -172,12 +174,12 @@ export default async function AdminPage() {
                   Cadastrar novo veículo
                 </Link>
 
-<Link
-  href="/admin/veiculos"
-  className="block w-full rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-left font-semibold text-white transition hover:bg-white/10"
->
-  Editar veículos
-</Link>
+                <Link
+                  href="/admin/veiculos"
+                  className="block w-full rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-left font-semibold text-white transition hover:bg-white/10"
+                >
+                  Editar veículos
+                </Link>
               </div>
             </div>
           </div>

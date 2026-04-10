@@ -12,7 +12,7 @@ export default function AdminLogoutButton() {
     try {
       setLoading(true);
       await supabaseBrowser.auth.signOut();
-      router.push("/admin/login");
+      router.push("/login");
       router.refresh();
     } finally {
       setLoading(false);

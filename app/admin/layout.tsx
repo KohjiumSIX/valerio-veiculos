@@ -1,5 +1,6 @@
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/server";
+import { isAdminEmail } from "@/lib/auth";
 
 export default async function AdminLayout({
   children,
@@ -12,7 +13,11 @@ export default async function AdminLayout({
     data: { user },
   } = await supabase.auth.getUser();
 
-  if (!user) {
+  if (!user?.email) {
+    redirect("/login");
+  }
+
+  if (!isAdminEmail(user.email)) {
     redirect("/login");
   }
 

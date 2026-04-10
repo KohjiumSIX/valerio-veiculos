@@ -6,22 +6,23 @@ import Navbar from "@/components/Navbar";
 import Container from "@/components/Container";
 import { createClient } from "@/lib/client";
 import type { Vehicle as VehicleType } from "@/lib/types";
+import { VEHICLE_SELECT_FIELDS } from "@/lib/constants";
 
 export default function AdminVehiclesPage() {
   const [vehicles, setVehicles] = useState<VehicleType[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
 
-  const supabase = createClient();
   useEffect(() => {
     let isMounted = true;
+    const supabase = createClient();
 
     async function loadVehicles() {
       setLoading(true);
 
       const { data, error } = await supabase
         .from("vehicles")
-        .select("*")
+        .select(VEHICLE_SELECT_FIELDS)
         .order("created_at", { ascending: false });
 
       if (error) {
@@ -52,13 +53,15 @@ export default function AdminVehiclesPage() {
     return vehicles.filter((vehicle) => {
       if (!normalizedSearch) return true;
 
+      const plate = vehicle.plate_ending || "";
+
       const haystack = [
         vehicle.title,
         vehicle.brand,
         vehicle.model,
         vehicle.slug,
         vehicle.year?.toString() ?? "",
-        vehicle.plate_final ?? "",
+        plate,
         vehicle.body_type ?? "",
       ]
         .join(" ")
@@ -195,6 +198,9 @@ export default function AdminVehiclesPage() {
                           {vehicle.body_type ? (
                             <span>• {vehicle.body_type}</span>
                           ) : null}
+{vehicle.plate_ending ? (
+  <span>• Final {vehicle.plate_ending}</span>
+) : null}
                         </div>
                       </div>
 

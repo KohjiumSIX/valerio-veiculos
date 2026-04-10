@@ -1,6 +1,9 @@
-const SUPABASE_URL = "https://yesnoghrirgbklkewzmq.supabase.co";
+const SUPABASE_URL =
+  process.env.NEXT_PUBLIC_SUPABASE_URL?.replace(/\/+$/, "") || "";
 
 function buildSupabasePublicUrl(path: string) {
+  if (!SUPABASE_URL) return "/placeholder-car.jpg";
+
   const clean = path.replace(/^\/+/, "").replace(/^public\//, "");
   return `${SUPABASE_URL}/storage/v1/object/public/${clean}`;
 }
@@ -36,7 +39,10 @@ export function normalizeImagesField(images: unknown): string[] {
         return parsed.filter((item): item is string => typeof item === "string");
       }
     } catch {
-      return [trimmed];
+      return trimmed
+        .split("\n")
+        .map((item) => item.trim())
+        .filter(Boolean);
     }
 
     return [trimmed];

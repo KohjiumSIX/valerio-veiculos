@@ -19,12 +19,12 @@ export default function LoginPage() {
     setMessage("");
 
     const { error } = await supabase.auth.signInWithPassword({
-      email,
+      email: email.trim(),
       password,
     });
 
     if (error) {
-      setMessage(error.message);
+      setMessage("E-mail ou senha inválidos.");
       setLoading(false);
       return;
     }
@@ -34,9 +34,11 @@ export default function LoginPage() {
   }
 
   return (
-    <main className="min-h-screen flex items-center justify-center bg-white px-4">
+    <main className="flex min-h-screen items-center justify-center bg-white px-4">
       <div className="w-full max-w-md rounded-2xl border border-black/10 bg-white p-6 shadow-sm">
-        <h1 className="mb-2 text-2xl font-bold text-center">Login administrativo</h1>
+        <h1 className="mb-2 text-center text-2xl font-bold">
+          Login administrativo
+        </h1>
         <p className="mb-6 text-center text-sm text-black/50">
           Entre para acessar o painel
         </p>
@@ -49,6 +51,7 @@ export default function LoginPage() {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
+            autoComplete="email"
           />
 
           <input
@@ -58,6 +61,7 @@ export default function LoginPage() {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             required
+            autoComplete="current-password"
           />
 
           {message && (

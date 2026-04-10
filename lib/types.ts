@@ -27,7 +27,10 @@ export type Vehicle = {
 
   body_type: string | null;
   accepts_trade: boolean | null;
-  plate_final: string | null;
+
+  // compatibilidade com nomes antigos/novos
+plate_ending?: string | null;
+
   ipva_paid: boolean | null;
   licensed: boolean | null;
 

@@ -16,8 +16,8 @@ export default async function VehiclesPage() {
         <Container>
           <SectionTitle
             eyebrow="Catálogo"
-            title="Todos os veículos disponíveis"
-            description="Confira o estoque completo da Valério Veículos. Use a busca e os filtros para encontrar o carro ideal com mais rapidez."
+            title="Nosso estoque de veículos selecionados"
+            description="Conheça o estoque da Valério Veículos e encontre veículos selecionados, com procedência e atendimento de confiança desde 2009. Use a busca e os filtros para encontrar a melhor opção para você."
             theme="dark"
           />
         </Container>
@@ -29,28 +29,28 @@ export default async function VehiclesPage() {
             <div className="grid gap-4 md:grid-cols-3">
               <div>
                 <p className="text-sm uppercase tracking-[0.2em] text-white/55">
-                  Visual
+                  QUALIDADE
                 </p>
                 <p className="mt-2 text-lg font-semibold">
-                  Catálogo limpo e elegante
+                  Veículos selecionados com mais critério
                 </p>
               </div>
 
               <div>
                 <p className="text-sm uppercase tracking-[0.2em] text-white/55">
-                  Navegação
+                  FACILIDADE
                 </p>
                 <p className="mt-2 text-lg font-semibold">
-                  Busca e filtros rápidos
+                  Encontre o carro ideal com mais rapidez
                 </p>
               </div>
 
               <div>
                 <p className="text-sm uppercase tracking-[0.2em] text-white/55">
-                  Próximo passo
+                  TRANSPARÊNCIA
                 </p>
                 <p className="mt-2 text-lg font-semibold">
-                  Página do carro com galeria e zoom
+                  Fotos, detalhes e informações completas
                 </p>
               </div>
             </div>

@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { WHATSAPP_NUMBER } from "@/lib/constants";
 
 function isActive(pathname: string, href: string) {
   if (href === "/") return pathname === "/";
@@ -53,7 +54,7 @@ export default function Navbar() {
           </div>
 
           <a
-            href="https://wa.me/5547984629584"
+            href={`https://wa.me/${WHATSAPP_NUMBER}`}
             target="_blank"
             rel="noreferrer"
             className="shrink-0 rounded-xl bg-white px-4 py-2 text-sm font-semibold text-black transition hover:bg-white/90 md:px-5"

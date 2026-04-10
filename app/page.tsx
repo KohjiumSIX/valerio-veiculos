@@ -24,10 +24,12 @@ export default function Home() {
   </span>
 </h1>
 
-              <p className="mt-7 max-w-[58ch] text-base leading-8 text-white/72 md:text-xl">
-                Na Valério Veículos você encontra atendimento rápido, veículos
-                selecionados e uma negociação mais segura, transparente e direta.
-              </p>
+<p className="mt-7 max-w-[58ch] text-base leading-8 text-white/72 md:text-xl">
+  Há mais de 15 anos no mercado, a Valério Veículos entrega segurança,
+  procedência e transparência em cada negociação. Trabalhamos com veículos
+  selecionados, documentação rigorosa e atendimento direto para você comprar
+  com total confiança.
+</p>
 
               <div className="mt-10 flex flex-wrap gap-4">
                 <Link
@@ -48,9 +50,9 @@ export default function Home() {
               </div>
 
               <div className="mt-10 grid gap-3 sm:grid-cols-3">
-                <InfoMiniCard label="Atendimento" value="Rápido e direto" />
-                <InfoMiniCard label="Negociação" value="Mais confiança" />
-                <InfoMiniCard label="Loja" value="Desde 2009" />
+                <InfoMiniCard label="Experiência" value="+15 anos de mercado" />
+                <InfoMiniCard label="Veículos" value="Revisados e selecionados" />
+                <InfoMiniCard label="Segurança" value="Procedência garantida" />
               </div>
             </div>
 
@@ -68,7 +70,7 @@ export default function Home() {
               <SectionTitle
                 eyebrow="Catálogo"
                 title="Veja todos os veículos em uma página exclusiva"
-                description="Para deixar a página principal mais limpa e elegante, o catálogo completo fica separado. Assim o cliente encontra os carros com mais foco, sem poluição visual."
+                description="Explore nosso estoque completo com veículos selecionados, fotos de alta qualidade e todas as informações detalhadas. Encontre o carro ideal com mais facilidade e segurança."
                 theme="dark"
               />
 
@@ -93,16 +95,16 @@ export default function Home() {
 
             <div className="grid gap-4 sm:grid-cols-2">
               <FeatureCard
-                title="Landing mais limpa"
-                description="Foco total na apresentação da loja, da confiança e do contato rápido."
+title="Veículos selecionados"
+description="Todos os carros passam por uma curadoria rigorosa para garantir qualidade, procedência e segurança na compra."
               />
               <FeatureCard
-                title="Catálogo separado"
-                description="Melhor experiência na busca por veículos, sem poluição visual na home."
+title="Busca facilitada"
+description="Encontre rapidamente o veículo ideal com uma navegação simples, direta e organizada."
               />
               <FeatureWideCard
-                title="Fotos e navegação"
-                description="Galeria com zoom, troca de imagens e apresentação mais premium para cada anúncio."
+title="Apresentação premium"
+description="Fotos detalhadas, informações completas e transparência total em cada veículo anunciado."
               />
             </div>
           </div>
@@ -113,31 +115,31 @@ export default function Home() {
         <Container>
           <SectionTitle
             eyebrow="Diferenciais"
-            title="Mais confiança em cada atendimento"
-            description="O site foi pensado para passar credibilidade, apresentar melhor os veículos e facilitar o contato."
+title="Compromisso com qualidade e transparência"
+description="Na Valério Veículos, cada detalhe é pensado para oferecer uma experiência segura, clara e confiável na compra do seu veículo."
             align="center"
           />
 
           <div className="mt-12 grid gap-6 md:grid-cols-3">
             <div className="rounded-[1.75rem] bg-black p-7 text-white">
-              <h3 className="text-xl font-bold">Visual forte</h3>
-              <p className="mt-3 text-white/70">
-                Identidade visual elegante em preto e branco para transmitir mais presença.
-              </p>
+<h3 className="text-xl font-bold">Procedência garantida</h3>
+<p className="mt-3 text-white/70">
+  Trabalhamos apenas com veículos de origem confiável e histórico transparente.
+</p>
             </div>
 
             <div className="rounded-[1.75rem] border border-black/10 bg-white p-7">
-              <h3 className="text-xl font-bold">Organização</h3>
-              <p className="mt-3 text-black/65">
-                Estrutura limpa e pensada para facilitar a navegação do cliente.
-              </p>
+<h3 className="text-xl font-bold">Documentação segura</h3>
+<p className="mt-3 text-black/65">
+  Todo o processo é feito com clareza e segurança, sem surpresas na negociação.
+</p>
             </div>
 
             <div className="rounded-[1.75rem] bg-black p-7 text-white">
-              <h3 className="text-xl font-bold">Contato direto</h3>
-              <p className="mt-3 text-white/70">
-                Atendimento rápido pelo WhatsApp para tirar dúvidas e consultar disponibilidade.
-              </p>
+<h3 className="text-xl font-bold">Atendimento personalizado</h3>
+<p className="mt-3 text-white/70">
+  Atendimento direto, rápido e transparente para te ajudar a fazer a melhor escolha.
+</p>
             </div>
           </div>
         </Container>
@@ -150,20 +152,20 @@ export default function Home() {
               <div className="max-w-[760px]">
                 <SectionTitle
                   eyebrow="Contato"
-                  title="Quer atendimento rápido?"
-                  description="Fale agora com a Valério Veículos para tirar dúvidas, consultar disponibilidade e receber atendimento direto."
+title="Pronto para encontrar seu próximo carro?"
+description="Entre em contato agora e receba atendimento rápido, transparente e sem compromisso." 
                   theme="dark"
                 />
 
                 <div className="mt-8 rounded-2xl border border-white/10 bg-white/5 p-4">
-                  <p className="text-sm text-white/60">WhatsApp</p>
-                  <p className="mt-1 text-lg font-semibold">(47) 98462-9584</p>
+                  <p className="text-sm text-white/60">Olá! Vi um veículo no site da Valério Veículos e gostaria de mais informações.</p>
+                  <p className="mt-1 text-lg font-semibold">47 984030116</p>
                 </div>
               </div>
 
               <div>
                 <a
-                  href="https://wa.me/5547984629584?text=Olá!%20Quero%20atendimento%20pela%20Valério%20Veículos."
+                  href="https://wa.me/5547984030116?text=Olá!%20Quero%20atendimento%20pela%20Valério%20Veículos."
                   target="_blank"
                   rel="noreferrer"
                   className="inline-flex rounded-2xl bg-white px-6 py-3.5 font-semibold text-black transition hover:bg-white/90"

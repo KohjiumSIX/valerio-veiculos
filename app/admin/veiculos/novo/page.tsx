@@ -61,7 +61,7 @@ const initialState: FormState = {
 
 export default function AdminNewVehiclePage() {
   const router = useRouter();
-  const supabase = createClient();
+  const supabase = useMemo(() => createClient(), []);
 
   const [form, setForm] = useState<FormState>(initialState);
   const [loading, setLoading] = useState(false);
@@ -169,10 +169,28 @@ export default function AdminNewVehiclePage() {
         };
       });
     } catch (error) {
-      console.error(error);
-      alert("Erro ao enviar imagem.");
+      setFeedback(
+        error instanceof Error ? error.message : "Erro ao enviar imagem."
+      );
+      setFeedbackType("error");
     } finally {
       setUploading(false);
+    }
+  }
+
+  async function validateSlug(slug: string) {
+    const { data, error } = await supabase
+      .from("vehicles")
+      .select("id")
+      .eq("slug", slug)
+      .maybeSingle();
+
+    if (error) {
+      throw new Error("Não foi possível validar o slug.");
+    }
+
+    if (data?.id) {
+      throw new Error("Já existe um veículo com este slug.");
     }
   }
 
@@ -205,12 +223,19 @@ export default function AdminNewVehiclePage() {
         Number.isNaN(parsedYear) ||
         Number.isNaN(parsedPrice) ||
         Number.isNaN(parsedKm) ||
+        parsedPrice < 0 ||
         parsedKm < 0
       ) {
         throw new Error("Ano, preço e KM precisam ser válidos.");
       }
 
       const slug = generateSlug(form.slug || form.title);
+
+      if (!slug) {
+        throw new Error("Slug inválido.");
+      }
+
+      await validateSlug(slug);
 
       const imageList = form.images
         .split("\n")
@@ -248,23 +273,14 @@ export default function AdminNewVehiclePage() {
         throw new Error(error.message);
       }
 
-      setFeedback(
-        publish
-          ? "Veículo publicado com sucesso."
-          : "Veículo salvo como rascunho."
-      );
-      setFeedbackType("success");
-      setForm(initialState);
-
       router.push("/admin/veiculos");
       router.refresh();
     } catch (error) {
-      const message =
+      setFeedback(
         error instanceof Error
           ? error.message
-          : "Não foi possível salvar o veículo.";
-
-      setFeedback(message);
+          : "Não foi possível salvar o veículo."
+      );
       setFeedbackType("error");
     } finally {
       setLoading(false);
@@ -275,7 +291,7 @@ export default function AdminNewVehiclePage() {
     <main className="min-h-screen bg-white text-black">
       <Navbar />
 
-      <section className="border-b border-black/10 bg-black pt-32 pb-12 text-white">
+      <section className="border-b border-black/10 bg-black pb-12 pt-32 text-white">
         <Container>
           <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
             <div>
@@ -341,7 +357,6 @@ export default function AdminNewVehiclePage() {
                   <Field label="Marca">
                     <input
                       type="text"
-                      placeholder="Honda"
                       className="input-admin"
                       value={form.brand}
                       onChange={(e) => updateField("brand", e.target.value)}
@@ -351,7 +366,6 @@ export default function AdminNewVehiclePage() {
                   <Field label="Modelo">
                     <input
                       type="text"
-                      placeholder="Civic Touring"
                       className="input-admin"
                       value={form.model}
                       onChange={(e) => updateField("model", e.target.value)}
@@ -361,7 +375,6 @@ export default function AdminNewVehiclePage() {
                   <Field label="Ano">
                     <input
                       type="number"
-                      placeholder="2020"
                       className="input-admin"
                       value={form.year}
                       onChange={(e) => updateField("year", e.target.value)}
@@ -371,7 +384,6 @@ export default function AdminNewVehiclePage() {
                   <Field label="Preço">
                     <input
                       type="number"
-                      placeholder="89900"
                       className="input-admin"
                       value={form.price}
                       onChange={(e) => updateField("price", e.target.value)}
@@ -383,7 +395,6 @@ export default function AdminNewVehiclePage() {
                   <Field label="KM">
                     <input
                       type="number"
-                      placeholder="48000"
                       className="input-admin"
                       value={form.km}
                       onChange={(e) => updateField("km", e.target.value)}
@@ -393,7 +404,6 @@ export default function AdminNewVehiclePage() {
                   <Field label="Combustível">
                     <input
                       type="text"
-                      placeholder="Flex"
                       className="input-admin"
                       value={form.fuel}
                       onChange={(e) => updateField("fuel", e.target.value)}
@@ -403,7 +413,6 @@ export default function AdminNewVehiclePage() {
                   <Field label="Câmbio">
                     <input
                       type="text"
-                      placeholder="Automático"
                       className="input-admin"
                       value={form.transmission}
                       onChange={(e) =>
@@ -415,7 +424,6 @@ export default function AdminNewVehiclePage() {
                   <Field label="Cor">
                     <input
                       type="text"
-                      placeholder="Preto"
                       className="input-admin"
                       value={form.color}
                       onChange={(e) => updateField("color", e.target.value)}
@@ -427,7 +435,6 @@ export default function AdminNewVehiclePage() {
                   <Field label="Carroceria">
                     <input
                       type="text"
-                      placeholder="SUV, Sedan, Hatch..."
                       className="input-admin"
                       value={form.bodyType}
                       onChange={(e) => updateField("bodyType", e.target.value)}
@@ -437,7 +444,6 @@ export default function AdminNewVehiclePage() {
                   <Field label="Final da placa">
                     <input
                       type="text"
-                      placeholder="Ex: 7"
                       maxLength={1}
                       className="input-admin"
                       value={form.plateEnding}
@@ -488,7 +494,7 @@ export default function AdminNewVehiclePage() {
                         Arraste imagens aqui ou selecione arquivos
                       </p>
                       <p className="mt-2 text-xs text-black/45">
-                        JPG, PNG, WEBP • múltiplos arquivos
+                        JPG, PNG, WEBP • até 8 MB por imagem
                       </p>
 
                       <label className="mt-4 inline-flex cursor-pointer rounded-xl bg-black px-4 py-2 text-sm font-semibold text-white transition hover:bg-black/85">
@@ -496,7 +502,7 @@ export default function AdminNewVehiclePage() {
                         <input
                           type="file"
                           multiple
-                          accept="image/*"
+                          accept=".jpg,.jpeg,.png,.webp"
                           className="hidden"
                           onChange={async (e) => {
                             const files = Array.from(e.target.files || []);
@@ -511,202 +517,87 @@ export default function AdminNewVehiclePage() {
                   <Field label="Galeria (URLs)">
                     <textarea
                       rows={4}
-                      placeholder="Uma URL por linha"
                       className="input-admin min-h-[120px] resize-none"
                       value={form.images}
                       onChange={(e) => updateField("images", e.target.value)}
-                    />
-                  </Field>
-
-                  {galleryPreview.length > 0 && (
-                    <div>
-                      <div className="mb-3 flex items-center justify-between gap-3">
-                        <p className="text-sm font-medium text-black/70">
-                          Prévia da galeria
-                        </p>
-                        <p className="text-xs text-black/45">
-                          Arrume a ordem com as setas e escolha a capa
-                        </p>
-                      </div>
-
-                      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
-                        {galleryPreview.map((image, index) => {
-                          const isCover = form.coverImage === image;
-
-                          return (
-                            <div
-                              key={`${image}-${index}`}
-                              className={`overflow-hidden rounded-2xl border ${
-                                isCover
-                                  ? "border-black bg-black text-white"
-                                  : "border-black/10 bg-black/5"
-                              }`}
-                            >
-                              <img
-                                src={image}
-                                alt={`Preview ${index + 1}`}
-                                className="h-40 w-full object-cover"
-                              />
-
-                              <div className="space-y-3 p-3">
-                                <div className="flex items-center justify-between gap-2">
-                                  <span
-                                    className={`text-xs ${
-                                      isCover
-                                        ? "text-white/70"
-                                        : "text-black/50"
-                                    }`}
-                                  >
-                                    {isCover
-                                      ? "Imagem de capa"
-                                      : `Imagem ${index + 1}`}
-                                  </span>
-
-                                  <button
-                                    type="button"
-                                    onClick={() => removeImage(index)}
-                                    className={`rounded-lg px-2 py-1 text-xs font-medium transition ${
-                                      isCover
-                                        ? "border border-white/15 bg-white/10 text-white hover:bg-white/15"
-                                        : "border border-black/10 hover:bg-black/5"
-                                    }`}
-                                  >
-                                    Remover
-                                  </button>
-                                </div>
-
-                                <div className="flex flex-wrap gap-2">
-                                  <button
-                                    type="button"
-                                    onClick={() => moveImage(index, "left")}
-                                    disabled={index === 0}
-                                    className={`rounded-lg px-2 py-1 text-xs font-medium transition ${
-                                      isCover
-                                        ? "border border-white/15 bg-white/10 text-white disabled:opacity-30"
-                                        : "border border-black/10 bg-white disabled:opacity-30"
-                                    }`}
-                                  >
-                                    ← Subir
-                                  </button>
-
-                                  <button
-                                    type="button"
-                                    onClick={() => moveImage(index, "right")}
-                                    disabled={index === galleryPreview.length - 1}
-                                    className={`rounded-lg px-2 py-1 text-xs font-medium transition ${
-                                      isCover
-                                        ? "border border-white/15 bg-white/10 text-white disabled:opacity-30"
-                                        : "border border-black/10 bg-white disabled:opacity-30"
-                                    }`}
-                                  >
-                                    Descer →
-                                  </button>
-
-                                  {!isCover && (
-                                    <button
-                                      type="button"
-                                      onClick={() => setAsCover(image)}
-                                      className="rounded-lg bg-black px-2 py-1 text-xs font-medium text-white transition hover:bg-black/85"
-                                    >
-                                      Definir capa
-                                    </button>
-                                  )}
-                                </div>
-                              </div>
-                            </div>
-                          );
-                        })}
-                      </div>
-                    </div>
-                  )}
-
-                  <Field label="Descrição">
-                    <textarea
-                      rows={6}
-                      placeholder="Descreva o veículo..."
-                      className="input-admin min-h-[160px] resize-none"
-                      value={form.description}
-                      onChange={(e) =>
-                        updateField("description", e.target.value)
-                      }
+                      placeholder="Uma URL por linha"
                     />
                   </Field>
                 </div>
 
-                <div>
-                  <p className="text-sm font-medium text-black/70">
-                    Configurações
-                  </p>
+                <Field label="Descrição">
+                  <textarea
+                    rows={6}
+                    className="input-admin min-h-[150px] resize-none"
+                    value={form.description}
+                    onChange={(e) => updateField("description", e.target.value)}
+                  />
+                </Field>
 
-                  <div className="mt-4 grid gap-3 sm:grid-cols-2">
-                    <Toggle
-                      label="Publicado"
-                      checked={form.isPublished}
-                      onChange={(checked) => updateField("isPublished", checked)}
-                    />
-                    <Toggle
-                      label="Destaque"
-                      checked={form.isFeatured}
-                      onChange={(checked) => updateField("isFeatured", checked)}
-                    />
-                    <Toggle
-                      label="Oferta"
-                      checked={form.isOffer}
-                      onChange={(checked) => updateField("isOffer", checked)}
-                    />
-                    <Toggle
-                      label="Recém-chegado"
-                      checked={form.isNewArrival}
-                      onChange={(checked) =>
-                        updateField("isNewArrival", checked)
-                      }
-                    />
-                    <Toggle
-                      label="Aceita troca"
-                      checked={form.acceptsTrade}
-                      onChange={(checked) =>
-                        updateField("acceptsTrade", checked)
-                      }
-                    />
-                    <Toggle
-                      label="IPVA pago"
-                      checked={form.ipvaPaid}
-                      onChange={(checked) => updateField("ipvaPaid", checked)}
-                    />
-                    <Toggle
-                      label="Licenciado"
-                      checked={form.licensed}
-                      onChange={(checked) => updateField("licensed", checked)}
-                    />
-                  </div>
+                <div className="grid gap-3 md:grid-cols-2">
+                  <Toggle
+                    label="Publicado"
+                    checked={form.isPublished}
+                    onChange={(checked) => updateField("isPublished", checked)}
+                  />
+                  <Toggle
+                    label="Destaque"
+                    checked={form.isFeatured}
+                    onChange={(checked) => updateField("isFeatured", checked)}
+                  />
+                  <Toggle
+                    label="Oferta"
+                    checked={form.isOffer}
+                    onChange={(checked) => updateField("isOffer", checked)}
+                  />
+                  <Toggle
+                    label="Recém-chegado"
+                    checked={form.isNewArrival}
+                    onChange={(checked) => updateField("isNewArrival", checked)}
+                  />
+                  <Toggle
+                    label="Aceita troca"
+                    checked={form.acceptsTrade}
+                    onChange={(checked) => updateField("acceptsTrade", checked)}
+                  />
+                  <Toggle
+                    label="IPVA pago"
+                    checked={form.ipvaPaid}
+                    onChange={(checked) => updateField("ipvaPaid", checked)}
+                  />
+                  <Toggle
+                    label="Licenciado"
+                    checked={form.licensed}
+                    onChange={(checked) => updateField("licensed", checked)}
+                  />
                 </div>
 
                 {feedback && (
-                  <p
-                    className={`text-sm font-medium ${
-                      feedbackType === "success"
-                        ? "text-emerald-600"
-                        : "text-red-600"
+                  <div
+                    className={`rounded-xl px-4 py-3 text-sm ${
+                      feedbackType === "error"
+                        ? "bg-red-50 text-red-700"
+                        : "bg-emerald-50 text-emerald-700"
                     }`}
                   >
                     {feedback}
-                  </p>
+                  </div>
                 )}
 
                 <div className="flex flex-wrap gap-3">
                   <button
                     type="button"
-                    disabled={loading || uploading}
                     onClick={(e) => handleSubmit(e, false)}
-                    className="rounded-xl border border-black/10 bg-white px-5 py-3 font-medium transition hover:bg-black/5 disabled:opacity-60"
+                    disabled={loading || uploading}
+                    className="rounded-xl border border-black/10 px-5 py-3 font-semibold text-black transition hover:bg-black/5 disabled:opacity-60"
                   >
                     {loading ? "Salvando..." : "Salvar rascunho"}
                   </button>
 
                   <button
                     type="button"
-                    disabled={loading || uploading}
                     onClick={(e) => handleSubmit(e, true)}
+                    disabled={loading || uploading}
                     className="rounded-xl bg-black px-5 py-3 font-semibold text-white transition hover:bg-black/85 disabled:opacity-60"
                   >
                     {loading ? "Publicando..." : "Publicar veículo"}
@@ -716,63 +607,89 @@ export default function AdminNewVehiclePage() {
             </div>
 
             <div className="space-y-6">
-              <div className="rounded-[2rem] border border-black/10 bg-black p-6 text-white shadow-sm">
-                <p className="text-sm uppercase tracking-[0.2em] text-white/45">
-                  Dicas
-                </p>
-                <h2 className="mt-2 text-2xl font-bold">
-                  Cadastro mais forte
-                </h2>
-
-                <div className="mt-6 space-y-4 text-white/75">
-                  <p>Use um título claro, com marca, modelo e ano.</p>
-                  <p>
-                    Adicione várias fotos do carro: frente, traseira, lateral,
-                    interior e detalhes.
-                  </p>
-                  <p>
-                    Destaque pontos fortes como baixa km, revisado, completo ou
-                    procedência.
-                  </p>
-                </div>
-              </div>
-
               <div className="rounded-[2rem] border border-black/10 bg-white p-6 shadow-sm">
                 <p className="text-sm uppercase tracking-[0.2em] text-black/40">
-                  Visualização
+                  Preview
                 </p>
-                <h2 className="mt-2 text-2xl font-bold">Prévia rápida</h2>
-
-                <div className="mt-6 rounded-[1.5rem] border border-black/10 bg-black/5 p-5">
-                  <div className="aspect-[16/10] overflow-hidden rounded-[1.25rem] bg-black/10">
-                    {form.coverImage ? (
-                      <img
-                        src={form.coverImage}
-                        alt="Prévia do veículo"
-                        className="h-full w-full object-cover"
-                      />
-                    ) : (
-                      <div className="flex h-full items-center justify-center text-sm text-black/35">
-                        Imagem principal
-                      </div>
-                    )}
-                  </div>
-
-                  <p className="mt-4 text-lg font-semibold">
-                    {form.title || "Título do veículo"}
-                  </p>
-                  <p className="mt-1 text-sm text-black/55">
-                    {form.brand || "Marca"} • {form.model || "Modelo"}
-                  </p>
-                  <p className="mt-4 text-xl font-bold">{previewPrice}</p>
-
-                  {galleryPreview.length > 0 && (
-                    <p className="mt-3 text-sm text-black/55">
-                      {galleryPreview.length} imagem(ns) na galeria
-                    </p>
-                  )}
-                </div>
+                <h2 className="mt-2 text-2xl font-bold">{form.title || "—"}</h2>
+                <p className="mt-3 text-black/60">
+                  {form.brand || "Marca"} • {form.model || "Modelo"}
+                </p>
+                <p className="mt-4 text-3xl font-bold">{previewPrice}</p>
               </div>
+
+              {galleryPreview.length > 0 && (
+                <div className="rounded-[2rem] border border-black/10 bg-white p-6 shadow-sm">
+                  <p className="text-sm uppercase tracking-[0.2em] text-black/40">
+                    Galeria
+                  </p>
+
+                  <div className="mt-4 space-y-3">
+                    {galleryPreview.map((image, index) => {
+                      const isCover = form.coverImage === image;
+
+                      return (
+                        <div
+                          key={`${image}-${index}`}
+                          className="rounded-2xl border border-black/10 p-3"
+                        >
+                          <div className="flex items-start gap-3">
+                            <img
+                              src={image}
+                              alt={`Imagem ${index + 1}`}
+                              className="h-20 w-28 rounded-xl object-cover"
+                            />
+
+                            <div className="flex-1 space-y-2">
+                              <p className="line-clamp-2 text-sm text-black/60">
+                                {image}
+                              </p>
+
+                              <div className="flex flex-wrap gap-2">
+                                <button
+                                  type="button"
+                                  onClick={() => setAsCover(image)}
+                                  className={`rounded-lg px-3 py-1.5 text-xs font-semibold ${
+                                    isCover
+                                      ? "bg-black text-white"
+                                      : "border border-black/10 text-black"
+                                  }`}
+                                >
+                                  {isCover ? "Capa" : "Definir como capa"}
+                                </button>
+
+                                <button
+                                  type="button"
+                                  onClick={() => moveImage(index, "left")}
+                                  className="rounded-lg border border-black/10 px-3 py-1.5 text-xs"
+                                >
+                                  ←
+                                </button>
+
+                                <button
+                                  type="button"
+                                  onClick={() => moveImage(index, "right")}
+                                  className="rounded-lg border border-black/10 px-3 py-1.5 text-xs"
+                                >
+                                  →
+                                </button>
+
+                                <button
+                                  type="button"
+                                  onClick={() => removeImage(index)}
+                                  className="rounded-lg border border-red-200 px-3 py-1.5 text-xs text-red-600"
+                                >
+                                  Remover
+                                </button>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
             </div>
           </div>
         </Container>
@@ -790,9 +707,7 @@ function Field({
 }) {
   return (
     <label className="block">
-      <span className="mb-2 block text-sm font-medium text-black/70">
-        {label}
-      </span>
+      <p className="mb-2 text-sm font-medium text-black/70">{label}</p>
       {children}
     </label>
   );
@@ -805,14 +720,13 @@ function Toggle({
 }: {
   label: string;
   checked: boolean;
-  onChange: (value: boolean) => void;
+  onChange: (checked: boolean) => void;
 }) {
   return (
-    <label className="flex items-center justify-between rounded-xl border border-black/10 bg-black/5 px-4 py-3">
-      <span className="text-sm font-medium">{label}</span>
+    <label className="flex items-center justify-between rounded-xl border border-black/10 px-4 py-3">
+      <span className="text-sm font-medium text-black/75">{label}</span>
       <input
         type="checkbox"
-        className="h-4 w-4 accent-black"
         checked={checked}
         onChange={(e) => onChange(e.target.checked)}
       />
