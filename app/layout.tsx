@@ -5,11 +5,6 @@ export const metadata: Metadata = {
   title: "Valério Veículos",
   description:
     "Catálogo de veículos com apresentação premium, atendimento rápido e experiência moderna para o cliente.",
-  icons: {
-    icon: "/favicon.ico",
-    shortcut: "/favicon.ico",
-    apple: "/favicon.ico",
-  },
 };
 
 export default function RootLayout({
@@ -19,7 +14,9 @@ export default function RootLayout({
 }) {
   return (
     <html lang="pt-BR">
-      <body className="bg-black text-white">{children}</body>
+      <body className="bg-black text-white overflow-x-hidden">
+        {children}
+      </body>
     </html>
   );
 }

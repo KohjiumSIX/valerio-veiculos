@@ -63,53 +63,58 @@ export default function Home() {
         </Container>
       </section>
 
-      <section className="-mt-10 bg-black pb-20 text-white lg:-mt-14">
-        <Container>
-          <div className="grid gap-10 rounded-[2.2rem] border border-white/10 bg-white/[0.03] p-7 shadow-[0_20px_80px_rgba(0,0,0,0.18)] md:p-9 lg:grid-cols-[1.05fr_0.95fr] lg:items-center lg:gap-14 lg:p-11">
-            <div className="max-w-[700px]">
-              <SectionTitle
-                eyebrow="Catálogo"
-                title="Veja todos os veículos em uma página exclusiva"
-                description="Explore nosso estoque completo com veículos selecionados, fotos de alta qualidade e todas as informações detalhadas. Encontre o carro ideal com mais facilidade e segurança."
-                theme="dark"
-              />
+<section className="-mt-10 bg-black pb-20 text-white lg:-mt-14">
+  <Container>
+    <div className="grid gap-10 rounded-[2.2rem] border border-white/10 bg-white/[0.03] p-7 shadow-[0_20px_80px_rgba(0,0,0,0.18)] md:p-9 xl:grid-cols-[1.2fr_0.9fr] xl:items-start xl:gap-14 xl:p-11">
 
-              <div className="mt-8 flex flex-wrap gap-4">
-                <Link
-                  href="/veiculos"
-                  className="rounded-2xl bg-white px-8 py-4 text-base font-semibold text-black transition hover:bg-white/90"
-                >
-                  Acessar catálogo
-                </Link>
+      {/* TEXTO */}
+      <div className="max-w-[700px]">
+        <SectionTitle
+          eyebrow="Catálogo"
+          title="Veja todos os veículos em uma página exclusiva"
+          description="Explore nosso estoque completo com veículos selecionados, fotos de alta qualidade e todas as informações detalhadas. Encontre o carro ideal com mais facilidade e segurança."
+          theme="dark"
+        />
 
-                <a
-                  href="https://wa.me/5547984629584"
-                  target="_blank"
-                  rel="noreferrer"
-                  className="rounded-2xl border border-white/15 bg-white/5 px-8 py-4 text-base font-semibold text-white transition hover:bg-white/10"
-                >
-                  Falar no WhatsApp
-                </a>
-              </div>
-            </div>
+        <div className="mt-8 flex flex-wrap gap-4">
+          <Link
+            href="/veiculos"
+            className="rounded-2xl bg-white px-8 py-4 text-base font-semibold text-black transition hover:bg-white/90"
+          >
+            Acessar catálogo
+          </Link>
 
-            <div className="grid gap-4 sm:grid-cols-2">
-              <FeatureCard
-title="Veículos selecionados"
-description="Todos os carros passam por uma curadoria rigorosa para garantir qualidade, procedência e segurança na compra."
-              />
-              <FeatureCard
-title="Busca facilitada"
-description="Encontre rapidamente o veículo ideal com uma navegação simples, direta e organizada."
-              />
-              <FeatureWideCard
-title="Apresentação premium"
-description="Fotos detalhadas, informações completas e transparência total em cada veículo anunciado."
-              />
-            </div>
-          </div>
-        </Container>
-      </section>
+          <a
+            href="https://wa.me/5547984629584"
+            target="_blank"
+            rel="noreferrer"
+            className="rounded-2xl border border-white/15 bg-white/5 px-8 py-4 text-base font-semibold text-white transition hover:bg-white/10"
+          >
+            Falar no WhatsApp
+          </a>
+        </div>
+      </div>
+
+      {/* CARDS */}
+      <div className="grid gap-4 sm:grid-cols-2">
+        <FeatureCard
+          title="Veículos selecionados"
+          description="Todos os carros passam por uma curadoria rigorosa para garantir qualidade, procedência e segurança na compra."
+        />
+
+        <FeatureCard
+          title="Busca facilitada"
+          description="Encontre rapidamente o veículo ideal com uma navegação simples, direta e organizada."
+        />
+
+        <FeatureWideCard
+          title="Apresentação premium"
+          description="Fotos detalhadas, informações completas e transparência total em cada veículo anunciado."
+        />
+      </div>
+    </div>
+  </Container>
+</section>
 
       <section className="bg-white py-20">
         <Container>
