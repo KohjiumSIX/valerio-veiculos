@@ -1,5 +1,5 @@
 export type Car = {
-  id: number;
+  id: string;
   slug: string;
   title: string;
   subtitle: string;
@@ -14,7 +14,7 @@ export type Car = {
 
 export const featuredCars: Car[] = [
   {
-    id: 1,
+    id: "1",
     slug: "honda-civic-touring-2020",
     title: "Honda Civic Touring",
     subtitle: "Sedã premium, completo e muito conservado",
@@ -28,7 +28,7 @@ export const featuredCars: Car[] = [
     badge: "Destaque",
   },
   {
-    id: 2,
+    id: "2",
     slug: "toyota-corolla-xei-2021",
     title: "Toyota Corolla XEi",
     subtitle: "Conforto, confiabilidade e excelente procedência",
@@ -42,7 +42,7 @@ export const featuredCars: Car[] = [
     badge: "Oferta",
   },
   {
-    id: 3,
+    id: "3",
     slug: "jeep-compass-longitude-2022",
     title: "Jeep Compass Longitude",
     subtitle: "SUV moderno, espaçoso e impecável",

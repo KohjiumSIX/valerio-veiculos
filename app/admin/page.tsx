@@ -172,12 +172,12 @@ export default async function AdminPage() {
                   Cadastrar novo veículo
                 </Link>
 
-                <Link
-                  href={`/admin/veiculos/editar/${vehicle.id}`}
-                  className="block w-full rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-left font-semibold text-white transition hover:bg-white/10"
-                >
-                  Editar veículos
-                </Link>
+<Link
+  href="/admin/veiculos"
+  className="block w-full rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-left font-semibold text-white transition hover:bg-white/10"
+>
+  Editar veículos
+</Link>
               </div>
             </div>
           </div>

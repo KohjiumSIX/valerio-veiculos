@@ -66,6 +66,9 @@ export type VehicleFormData = {
 export type LeadFormData = {
   name: string;
   phone: string;
-  message: string;
-  vehicle_id?: string;
+  email?: string | null;
+  message?: string | null;
+  vehicle_id?: string | null;
+  vehicle_title?: string | null;
+  source?: string | null;
 };

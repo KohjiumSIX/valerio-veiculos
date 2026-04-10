@@ -84,10 +84,11 @@ export default async function VehicleDetailsPage({ params }: Props) {
                     label="Aceita troca"
                     value={vehicle.accepts_trade ? "Sim" : "Não"}
                   />
-                  <SpecCard
-                    label="Final da placa"
-                    value={vehicle.plate_ending || "-"}
-                  />
+<SpecCard
+  label="Final da placa"
+  value={vehicle.plate_final || "-"}
+/>
+                  
                   <SpecCard
                     label="IPVA pago"
                     value={vehicle.ipva_paid ? "Sim" : "Não"}

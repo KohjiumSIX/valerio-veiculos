@@ -1,24 +1,27 @@
-import { supabase } from "@/lib/supabase";
+import { createClient } from "@/lib/client";
 import type { LeadFormData } from "@/lib/types";
 
 export async function createLead(payload: LeadFormData) {
-  const cleanPhone = payload.phone.replace(/\D/g, "");
+  const supabase = createClient();
 
   const { data, error } = await supabase
     .from("leads")
     .insert([
       {
+        name: payload.name,
+        phone: payload.phone,
+        email: payload.email || null,
+        message: payload.message || null,
         vehicle_id: payload.vehicle_id || null,
-        name: payload.name.trim(),
-        phone: cleanPhone,
-        message: payload.message?.trim() || null,
+        vehicle_title: payload.vehicle_title || null,
+        source: payload.source || "site",
       },
     ])
     .select()
     .single();
 
   if (error) {
-    throw new Error(`Erro ao enviar lead: ${error.message}`);
+    throw new Error(error.message);
   }
 
   return data;
