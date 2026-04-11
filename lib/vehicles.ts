@@ -74,14 +74,14 @@ export async function getVehicleBySlug(slug: string) {
 
   const { data, error } = await supabase
     .from("vehicles")
-    .select(VEHICLE_SELECT_FIELDS)
+    .select("*")
     .eq("slug", slug)
-    .eq("is_published", true)
     .maybeSingle();
 
   if (error) {
-    throw new Error(`Erro ao buscar veículo por slug: ${error.message}`);
+    console.error("Erro ao buscar veículo:", error);
+    return null;
   }
 
-  return data as Vehicle | null;
+  return data;
 }
