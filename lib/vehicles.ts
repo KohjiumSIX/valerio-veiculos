@@ -79,7 +79,7 @@ export async function getVehicleBySlug(slug: string) {
     .maybeSingle();
 
   if (error) {
-    console.error("Erro ao buscar veículo:", error);
+    console.error("Erro ao buscar veículo por slug:", error);
     return null;
   }
 

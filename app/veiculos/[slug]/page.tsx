@@ -10,9 +10,9 @@ import { getVehicleBySlug } from "@/lib/vehicles";
 import { WHATSAPP_NUMBER } from "@/lib/constants";
 
 type PageProps = {
-  params: {
+  params: Promise<{
     slug: string;
-  };
+  }>;
 };
 
 function formatVehiclePrice(price: number | null) {
@@ -29,7 +29,8 @@ function formatVehiclePrice(price: number | null) {
 export async function generateMetadata(
   { params }: PageProps
 ): Promise<Metadata> {
-  const vehicle = await getVehicleBySlug(params.slug);
+  const { slug } = await params;
+  const vehicle = await getVehicleBySlug(slug);
 
   if (!vehicle) {
     return {
@@ -58,8 +59,9 @@ export async function generateMetadata(
 }
 
 export default async function VehicleDetailsPage({ params }: PageProps) {
+  const { slug } = await params;
   const supabase = await createClient();
-  const vehicle = await getVehicleBySlug(params.slug);
+  const vehicle = await getVehicleBySlug(slug);
 
   if (!vehicle) {
     notFound();
